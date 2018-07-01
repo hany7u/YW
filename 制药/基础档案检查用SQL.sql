@@ -1,10 +1,10 @@
---价格管控模式和标准号检查
+﻿--价格管控模式和标准号检查
 select m.pk_material 物料主键,m.code 物料编码,m.name 物料名称,m.materialspec 规格,m.materialtype 型号,m.def2 标准号,m.def1 价格管控模式主键,d.name 价格管控模式名称,
 clazz.name 
 from bd_material m
 left join bd_marbasclass clazz on m.pk_marbasclass = clazz.pk_marbasclass
 left join bd_defdoc d on m.def1 = d.pk_defdoc
-where m.def1 <> '~'
+--where m.def1 <> '~'
 ;
 
 select * from qc_checkstandard;
@@ -32,18 +32,26 @@ left join bd_materialfi mfi on m.pk_material = mfi.pk_material ;
 
 --物料库存信息检查
 select ms.pk_materialstock 物料库存信息主键,
-       m.pk_material       物料主键,
+       /*m.pk_material       物料主键,
        m.code              物料编码,
        m.name              物料名称,
        m.materialspec      规格,
-       m.materialtype      型号,
+       m.materialtype      型号,*/
        ms.wholemanaflag    批次管理,
        ms.chkfreeflag      免检,
        ms.stockbycheck     根据检验结果入库,
        ms.negallowed       允许负库存
   from bd_materialstock ms
-left join bd_material m on ms.pk_material = m.pk_material
+--left join bd_material m on ms.pk_material = m.pk_material
+where ms.pk_materialstock in ('1001NC1000000001OXXT','1001NC1000000001OXY7','1001NC1000000001OXYJ','1001NC1000000001OXYR')
+for update
 ;
+
+UPDATE bd_materialstock ms SET ms.wholemanaflag = 'Y' where ms.pk_materialstock in ('1001NC1000000001OXXT','1001NC1000000001OXY7','1001NC1000000001OXYJ','1001NC1000000001OXYR');
+commit;
+
+
+
 
 --物料基本分类
 select clazz.code             物料基本分类编码,
@@ -135,11 +143,22 @@ select s.code        供应商编码,
   from bd_supplier s
 left join bd_defdoc d on s.def2 = d.pk_defdoc
 left join bd_defdoclist l on d.pk_defdoclist = l.pk_defdoclist
+where s.name like '%零%'
 ;
 
 select d.code 供应商属性编码, d.name 供应商属性名称, d.pk_defdoc 供应商属性主键 from bd_defdoc d
 left join bd_defdoclist l on d.pk_defdoclist = l.pk_defdoclist
-where l.name = '供应商属性'
+where l.name = '供应商属性';
+
+select t.code,
+       t.name,
+       t.pk_income 
+from bd_income t;
+
+select t.pk_customer,
+       t.pk_org,
+       t.pk_payterm
+from bd_custfinance t;
 
 
 
