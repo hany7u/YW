@@ -160,6 +160,11 @@ select t.pk_customer,
        t.pk_payterm
 from bd_custfinance t;
 
+select b.billtypename, b.pk_billtypecode ,b.pk_billtypeid
+from bd_billtype b 
+left join org_orgs orgs on b.pk_org = orgs.pk_org
+where b.pk_billtypecode like '21-Cxx%'
+
 
 
 
